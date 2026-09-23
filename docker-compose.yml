@@ -1,0 +1,17 @@
+services:
+  bot:
+    build: .
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./runtime:/app/runtime
+      - ./data/faq.md:/app/data/faq.md:ro
+    networks:
+      - ai-network
+
+networks:
+  ai-network:
+    external: true
+    name: ai-network
+

@@ -1,0 +1,13 @@
+.env
+.venv/
+.idea/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+runtime/support.db
+runtime/support.db-shm
+runtime/support.db-wal
+runtime/llm_calls.jsonl
+
