@@ -9,6 +9,7 @@ from typing import AsyncIterator
 
 import aiosqlite
 from aiogram import Bot, F, Router
+from aiogram.enums import ParseMode
 from aiogram.exceptions import TelegramAPIError
 from aiogram.filters import Command
 from aiogram.types import Message
@@ -17,6 +18,7 @@ from openai import APIConnectionError, APIError, APITimeoutError
 from app.config import Settings
 from app.database import Database
 from app.llm import LLMService, ToolLoopLimitError
+from app.telegram_formatting import render_telegram_html
 from app.tools import ToolExecutionContext
 
 logger = logging.getLogger(__name__)
@@ -127,7 +129,9 @@ def create_router(
                 await database.add_message(chat_id, "user", message.text)
                 history = await database.get_recent_messages(chat_id, limit=10)
                 answer = await llm_service.run_conversation(history, context)
-                await message.answer(answer)
+                await message.answer(
+                    render_telegram_html(answer), parse_mode=ParseMode.HTML
+                )
                 await database.add_message(chat_id, "assistant", answer)
             except (APITimeoutError, APIConnectionError, APIError, ToolLoopLimitError):
                 logger.exception("LLM request failed for chat %s", chat_id)
