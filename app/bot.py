@@ -104,6 +104,11 @@ def create_router(
         if message.text is None or message.from_user is None:
             return
         chat_id = message.chat.id
+        # Административный чат — это очередь заявок, а не клиентский диалог.
+        # Команду /reply обрабатывает зарегистрированный выше обработчик;
+        # весь остальной текст в этом чате нужно игнорировать.
+        if chat_id == settings.admin_chat_id:
+            return
         user_id = message.from_user.id
         contact = (
             f"@{message.from_user.username}"
